@@ -206,7 +206,7 @@ void forwardByTime(int speed, int runTime) {
   leftBackwheel(abs(speedValueCheck(speed)));
   rightFrontwheel(abs(speedValueCheck(speed)));
   rightBackwheel(abs(speedValueCheck(speed)));
-  task::sleep(runTime);
+  wait(runTime, msec); 
 }
 
 void reverseByTime(int speed, int runTime) {
@@ -215,7 +215,7 @@ void reverseByTime(int speed, int runTime) {
   leftBackwheel(-abs(speedValueCheck(speed)));
   rightFrontwheel(-abs(speedValueCheck(speed)));
   rightBackwheel(-abs(speedValueCheck(speed)));
-  task::sleep(runTime);
+  wait(runTime, msec); 
 }
 
 void leftStrafeByTime(int speed, int runTime) {
@@ -224,7 +224,7 @@ void leftStrafeByTime(int speed, int runTime) {
   leftBackwheel(abs(speedValueCheck(speed)));
   rightFrontwheel(abs(speedValueCheck(speed)));
   rightBackwheel(-abs(speedValueCheck(speed)));
-  task::sleep(runTime);
+  wait(runTime, msec); 
 }
 
 void rightStrafeByTime(int speed, int runTime) {
@@ -233,7 +233,7 @@ void rightStrafeByTime(int speed, int runTime) {
   leftBackwheel(-abs(speedValueCheck(speed)));
   rightFrontwheel(-abs(speedValueCheck(speed)));
   rightBackwheel(abs(speedValueCheck(speed)));
-  task::sleep(runTime);
+  wait(runTime, msec); 
 }
 
 void rightInplaceTurnByTime(int speed, int runTime) {
@@ -242,7 +242,7 @@ void rightInplaceTurnByTime(int speed, int runTime) {
   leftBackwheel(abs(speedValueCheck(speed)));
   rightFrontwheel(-abs(speedValueCheck(speed)));
   rightBackwheel(-abs(speedValueCheck(speed)));
-  task::sleep(runTime);
+  wait(runTime, msec); 
 }
 
 void leftInplaceTurnByTime(int speed, int runTime) {
@@ -251,5 +251,5 @@ void leftInplaceTurnByTime(int speed, int runTime) {
   leftBackwheel(-abs(speedValueCheck(speed)));
   rightFrontwheel(abs(speedValueCheck(speed)));
   rightBackwheel(abs(speedValueCheck(speed)));
-  task::sleep(runTime);
+  wait(runTime, msec); 
 }
