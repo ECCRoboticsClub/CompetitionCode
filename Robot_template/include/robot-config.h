@@ -19,7 +19,8 @@ extern motor leftArmMotor;
 extern motor rightArmMotor;
 extern motor leftIntakeMotor;
 extern motor rightIntakeMotor;
-extern motor trayPiotMotor;
+extern motor trayPivotMotor;
+extern controller Controller1;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

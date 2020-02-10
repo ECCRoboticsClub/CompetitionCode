@@ -24,7 +24,7 @@ motor leftArmMotor = motor(PORT13, ratio18_1, false);
 motor rightArmMotor = motor(PORT14, ratio18_1, true);
 motor leftIntakeMotor = motor(PORT15, ratio18_1, true);
 motor rightIntakeMotor = motor(PORT16, ratio18_1, false);
-motor trayPiotMotor = motor(PORT17, ratio18_1, false);
+motor trayPivotMotor = motor(PORT17, ratio18_1, false);
 controller Controller1 = controller(primary);
 
 // VEXcode generated functions
