@@ -59,6 +59,11 @@ void leftStrafeByTime(int speed, int runTime);
 void rightStrafeByTime(int speed, int runTime);
 void rightInplaceTurnByTime(int speed, int runTime);
 void leftInplaceTurnByTime(int speed, int runTime);
+void leftFrontwheelRotate(int speed, int rotationNumber);
+void leftBackwheelRotate(int speed, int rotationNumber);
+void rightFrontwheelRotate(int speed, int rotationNumber);
+void rightBackwheelRotate(int speed, int rotationNumber);
+void armRotate(int speed, int rotationNumber);
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -252,4 +257,71 @@ void leftInplaceTurnByTime(int speed, int runTime) {
   rightFrontwheel(abs(speedValueCheck(speed)));
   rightBackwheel(abs(speedValueCheck(speed)));
   task::sleep(runTime);
+}
+
+void clearEncoder() {
+
+  leftFrontMotor1.setPosition(0, degrees);
+  leftFrontMotor2.setPosition(0, degrees);
+  leftFrontMotor3.setPosition(0, degrees);
+  leftBackMotor1.setPosition(0, degrees);
+  leftBackMotor2.setPosition(0, degrees);
+  leftBackMotor3.setPosition(0, degrees);
+  rightFrontMotor1.setPosition(0, degrees);
+  rightFrontMotor2.setPosition(0, degrees);
+  rightFrontMotor3.setPosition(0, degrees);
+  rightBackMotor1.setPosition(0, degrees);
+  rightBackMotor2.setPosition(0, degrees);
+  rightBackMotor3.setPosition(0, degrees);
+}
+
+void armClearEncoder() {
+  rightArmMotor.setPosition(0, degrees);
+  leftArmMotor.setPosition(0, degrees);
+}
+
+void trayPivotClearEncoder() { trayPivotMotor.setPosition(0, degrees); }
+
+void leftFrontwheelRotate(int speed, int rotationNumber) {
+  leftFrontMotor1.setVelocity(speed, pct);
+  leftFrontMotor2.setVelocity(speed, pct);
+  leftFrontMotor3.setVelocity(speed, pct);
+  leftFrontMotor1.spinFor(rotationNumber, degrees);
+  leftFrontMotor2.spinFor(rotationNumber, degrees);
+  leftFrontMotor3.spinFor(rotationNumber, degrees);
+}
+
+void leftBackwheelRotate(int speed, int rotationNumber) {
+  leftBackMotor1.setVelocity(speed, pct);
+  leftBackMotor2.setVelocity(speed, pct);
+  leftBackMotor3.setVelocity(speed, pct);
+  leftBackMotor1.spinFor(rotationNumber, degrees);
+  leftBackMotor2.spinFor(rotationNumber, degrees);
+  leftBackMotor3.spinFor(rotationNumber, degrees);
+}
+
+void rightFrontwheelRotate(int speed, int rotationNumber) {
+  rightFrontMotor1.setVelocity(speed, pct);
+  rightFrontMotor2.setVelocity(speed, pct);
+  rightFrontMotor3.setVelocity(speed, pct);
+  rightFrontMotor1.spinFor(rotationNumber, degrees);
+  rightFrontMotor2.spinFor(rotationNumber, degrees);
+  rightFrontMotor3.spinFor(rotationNumber, degrees);
+}
+
+void rightBackwheelRotate(int speed, int rotationNumber) {
+  rightBackMotor1.setVelocity(speed, pct);
+  rightBackMotor2.setVelocity(speed, pct);
+  rightBackMotor3.setVelocity(speed, pct);
+  rightBackMotor1.spinFor(rotationNumber, degrees);
+  rightBackMotor2.spinFor(rotationNumber, degrees);
+  rightBackMotor3.spinFor(rotationNumber, degrees);
+}
+
+void armRotate(int speed, int rotationNumber) { 
+
+  rightArmMotor.rotateTo(rotationNumber, degrees);
+  leftArmMotor.rotateTo(rotationNumber, degrees);
+  rightArmMotor.setVelocity(speed, pct);
+  leftArmMotor.setVelocity(speed, pct);
 }
