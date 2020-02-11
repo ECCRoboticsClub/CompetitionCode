@@ -31,8 +31,13 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
-
+#include <string>
 using namespace vex;
+
+double WheelDiameter = 4;
+
+std::string lengthUnits= "inches";
+
 void leftFrontwheel(int speed);
 void leftBackwheel(int speed);
 void rightFrontwheel(int speed);
@@ -52,8 +57,8 @@ void driveStopMotor();
 void armStopMotor();
 void intakeStopMotor();
 int speedValueCheck(int speed);
-void forwardByTime(int speed, int runTime);
 void arm(int speed, int runTime);
+void forwardByTime(int speed, int runTime);
 void reverseByTime(int speed, int runTime);
 void leftStrafeByTime(int speed, int runTime);
 void rightStrafeByTime(int speed, int runTime);
@@ -64,6 +69,12 @@ void leftBackwheelRotate(int speed, int rotationNumber);
 void rightFrontwheelRotate(int speed, int rotationNumber);
 void rightBackwheelRotate(int speed, int rotationNumber);
 void armRotate(int speed, int rotationNumber);
+void forwardByDistance(int speed, int Distance);
+void reverseByDistance(int speed, int Distance);
+void leftStrafeByDistance(int speed, int Distance);
+void rightStrafeByDistance(int speed, int Distance);
+double wheelDiameter(double Wheelsize, std::string Units);
+double TagetDistance(double Wheeldiameter);
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -324,4 +335,24 @@ void armRotate(int speed, int rotationNumber) {
   leftArmMotor.rotateTo(rotationNumber, degrees);
   rightArmMotor.setVelocity(speed, pct);
   leftArmMotor.setVelocity(speed, pct);
+}
+
+void forwardByDistance(int speed, int Distance){
+
+}
+void reverseByDistance(int speed, int Distance){
+
+}
+void leftStrafeByDistance(int speed, int Distance){
+
+}
+void rightStrafeByDistance(int speed, int Distance){
+
+}
+double wheelDiameter(double Wheelsize, std::string lengthUnits){
+
+}
+double tagetDistance(double TagetDistance, double Wheeldiameter){
+
+return (360 * TagetDistance)/Wheeldiameter;
 }
