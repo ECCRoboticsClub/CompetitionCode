@@ -34,9 +34,8 @@
 #include <string>
 using namespace vex;
 
-double WheelDiameter = 4;
-
-std::string lengthUnits= "inches";
+double wheelSize = 4;
+std::string lengthUnits = "inches";
 
 void leftFrontwheel(int speed);
 void leftBackwheel(int speed);
@@ -64,6 +63,9 @@ void leftStrafeByTime(int speed, int runTime);
 void rightStrafeByTime(int speed, int runTime);
 void rightInplaceTurnByTime(int speed, int runTime);
 void leftInplaceTurnByTime(int speed, int runTime);
+void driveClearEncoder();
+void armClearEncoder();
+void trayPivotClearEncoder();
 void leftFrontwheelRotate(int speed, int rotationNumber);
 void leftBackwheelRotate(int speed, int rotationNumber);
 void rightFrontwheelRotate(int speed, int rotationNumber);
@@ -74,15 +76,28 @@ void reverseByDistance(int speed, int Distance);
 void leftStrafeByDistance(int speed, int Distance);
 void rightStrafeByDistance(int speed, int Distance);
 double wheelDiameter(double Wheelsize, std::string Units);
-double TagetDistance(double Wheeldiameter);
+double targetDistance(double Wheeldiameter);
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+  int speedarm = 100;
   while (true) {
     drive(10);
-    arm(speed);
-    intake(speed);
+
+    if (Controller1.ButtonUp.pressing())
+    arm(speedarm / speedControl());
+  else if (Controller1.ButtonDown.pressing())
+    arm(speedarm / speedControl());
+  else
+    armStopMotor();
+
+if (Controller1.ButtonLeft.pressing())
+    intake(speedarm / speedControl());
+  else if (Controller1.ButtonRight.pressing())
+    intake(speedarm / speedControl());
+  else
+    intakeStopMotor();
   }
 }
 
@@ -270,7 +285,7 @@ void leftInplaceTurnByTime(int speed, int runTime) {
   wait(runTime, msec);
 }
 
-void clearEncoder() {
+void driveClearEncoder() {
 
   leftFrontMotor1.setPosition(0, degrees);
   leftFrontMotor2.setPosition(0, degrees);
@@ -337,22 +352,51 @@ void armRotate(int speed, int rotationNumber) {
   leftArmMotor.setVelocity(speed, pct);
 }
 
-void forwardByDistance(int speed, int Distance){
-
+void forwardByDistance(int speed, int Distance) {
+  driveClearEncoder();
+  leftFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
 }
-void reverseByDistance(int speed, int Distance){
 
+void reverseByDistance(int speed, int Distance) {
+  driveClearEncoder();
+  leftFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
 }
-void leftStrafeByDistance(int speed, int Distance){
 
+void leftStrafeByDistance(int speed, int Distance) {
+  driveClearEncoder();
+  leftFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
 }
-void rightStrafeByDistance(int speed, int Distance){
 
+void rightStrafeByDistance(int speed, int Distance) {
+  driveClearEncoder();
+  leftFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  rightBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
 }
-double wheelDiameter(double Wheelsize, std::string lengthUnits){
 
+double wheelcircumference(double Wheelsize, std::string lengthUnits) {
+  double Wheelsize2;
+  if (lengthUnits == "cm" || "centimeter") {
+    Wheelsize2 = Wheelsize * 0.393701;
+  } else if (lengthUnits == "mm" || "centimeter") {
+    Wheelsize2 = Wheelsize * 0.0393701;
+  } else if (lengthUnits == "in" || "inch") {
+    Wheelsize2 = Wheelsize;
+  }
+  return Wheelsize2 * 3.14159265359;
 }
-double tagetDistance(double TagetDistance, double Wheeldiameter){
 
-return (360 * TagetDistance)/Wheeldiameter;
+double targetDistance(double targetDistance) {
+
+  return (360 * targetDistance) / wheelcircumference(wheelSize, lengthUnits);
 }
