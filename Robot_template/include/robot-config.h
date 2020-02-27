@@ -19,6 +19,8 @@ extern motor leftIntakeMotor;
 extern motor rightIntakeMotor;
 extern motor trayPivotMotor;
 extern controller Controller1;
+extern limit frontLimitSwitch;
+extern limit backLimitSwitch;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Text.

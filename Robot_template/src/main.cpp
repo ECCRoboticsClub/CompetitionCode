@@ -1,23 +1,24 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-
-// leftFrontDrMotor1    motor         1               
-// leftFrontDrMotor2    motor         2               
-// leftFrontDrMotor3    motor         3               
-// leftBackDrMotor1     motor         4               
-// leftBackDrMotor2     motor         5               
-// leftBackDrMotor3     motor         6               
-// rightFrontDrMotor1   motor         7               
-// rightFrontDrMotor2   motor         8               
-// rightFrontDrMotor3   motor         9               
-// rightBackDrMotor1    motor         10              
-// rightBackDrMotor2    motor         11              
-// rightBackDrMotor3    motor         12              
-// leftIntakeMotor      motor         15              
-// rightIntakeMotor     motor         16              
-// trayPivotMotor       motor         17              
-// Controller1          controller                    
+// leftFrontDrMotor1    motor         1
+// leftFrontDrMotor2    motor         2
+// leftFrontDrMotor3    motor         3
+// leftBackDrMotor1     motor         4
+// leftBackDrMotor2     motor         5
+// leftBackDrMotor3     motor         6
+// rightFrontDrMotor1   motor         7
+// rightFrontDrMotor2   motor         8
+// rightFrontDrMotor3   motor         9
+// rightBackDrMotor1    motor         10
+// rightBackDrMotor2    motor         11
+// rightBackDrMotor3    motor         12
+// leftIntakeMotor      motor         15
+// rightIntakeMotor     motor         16
+// trayPivotMotor       motor         17
+// Controller1          controller
+// frontLimitSwitch     limit         A
+// backLimitSwitch      limit         B
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -61,7 +62,9 @@ void reverseByDistance(int speed, int Distance);
 void leftStrafeByDistance(int speed, int Distance);
 void rightStrafeByDistance(int speed, int Distance);
 double wheelDiameter(double Wheelsize, std::string Units);
-double targetDistance(double Wheeldiameter);
+double targetDistance(double targetdistance, double wheelSize,
+                      std::string lengthUnits);
+void trayPivot(int speed);
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -70,12 +73,12 @@ int main() {
   while (true) {
     driveBase(10);
 
-if (Controller1.ButtonLeft.pressing())
-    intake(speedarm / speedControl());
-  else if (Controller1.ButtonRight.pressing())
-    intake(speedarm / speedControl());
-  else
-    intakeStopMotor();
+    if (Controller1.ButtonLeft.pressing())
+      intake(speedarm / speedControl());
+    else if (Controller1.ButtonRight.pressing())
+      intake(speedarm / speedControl());
+    else
+      intakeStopMotor();
   }
 }
 
@@ -87,30 +90,39 @@ void driveBase(int threshold) {
 }
 
 void leftFrontwheel(int speed) {
-  leftFrontDrMotor1.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  leftFrontDrMotor2.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  leftFrontDrMotor3.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+  leftFrontDrMotor1.spin(vex::directionType::fwd, speed,
+                         vex::velocityUnits::pct);
+  leftFrontDrMotor2.spin(vex::directionType::fwd, speed,
+                         vex::velocityUnits::pct);
+  leftFrontDrMotor3.spin(vex::directionType::fwd, speed,
+                         vex::velocityUnits::pct);
 }
 
 void leftBackwheel(int speed) {
-  leftBackDrMotor1.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  leftBackDrMotor2.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  leftBackDrMotor3.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+  leftBackDrMotor1.spin(vex::directionType::fwd, speed,
+                        vex::velocityUnits::pct);
+  leftBackDrMotor2.spin(vex::directionType::fwd, speed,
+                        vex::velocityUnits::pct);
+  leftBackDrMotor3.spin(vex::directionType::fwd, speed,
+                        vex::velocityUnits::pct);
 }
 
 void rightFrontwheel(int speed) {
   rightFrontDrMotor1.spin(vex::directionType::fwd, speed,
-                        vex::velocityUnits::pct);
+                          vex::velocityUnits::pct);
   rightFrontDrMotor2.spin(vex::directionType::fwd, speed,
-                        vex::velocityUnits::pct);
+                          vex::velocityUnits::pct);
   rightFrontDrMotor3.spin(vex::directionType::fwd, speed,
-                        vex::velocityUnits::pct);
+                          vex::velocityUnits::pct);
 }
 
 void rightBackwheel(int speed) {
-  rightBackDrMotor1.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  rightBackDrMotor2.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-  rightBackDrMotor3.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+  rightBackDrMotor1.spin(vex::directionType::fwd, speed,
+                         vex::velocityUnits::pct);
+  rightBackDrMotor2.spin(vex::directionType::fwd, speed,
+                         vex::velocityUnits::pct);
+  rightBackDrMotor3.spin(vex::directionType::fwd, speed,
+                         vex::velocityUnits::pct);
 }
 
 void intake(int speed) { // needs work
@@ -306,36 +318,56 @@ void rightBackwheelRotate(int speed, int rotationNumber) {
   rightBackDrMotor3.spinFor(rotationNumber, degrees);
 }
 
-void forwardByDistance(int speed, int Distance) {
+void forwardByDistance(int speed, double targetdistance, double wheelSize,
+                       std::string lengthUnits) {
   driveClearEncoder();
-  leftFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
-  leftBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftFrontwheelRotate(abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
+  leftBackwheelRotate(abs(speedValueCheck(speed)),
+                      targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightFrontwheelRotate(abs(speedValueCheck(speed)),
+                        targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightBackwheelRotate(abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
 }
 
-void reverseByDistance(int speed, int Distance) {
+void reverseByDistance(int speed, double targetdistance, double wheelSize,
+                       std::string lengthUnits) {
   driveClearEncoder();
-  leftFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
-  leftBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftFrontwheelRotate(-abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
+  leftBackwheelRotate(-abs(speedValueCheck(speed)),
+                      targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightFrontwheelRotate(-abs(speedValueCheck(speed)),
+                        targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightBackwheelRotate(-abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
 }
 
-void leftStrafeByDistance(int speed, int Distance) {
+void leftStrafeByDistance(int speed, double targetdistance, double wheelSize,
+                          std::string lengthUnits) {
   driveClearEncoder();
-  leftFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
-  leftBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftFrontwheelRotate(-abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
+  leftBackwheelRotate(abs(speedValueCheck(speed)),
+                      targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightFrontwheelRotate(abs(speedValueCheck(speed)),
+                        targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightBackwheelRotate(-abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
 }
 
-void rightStrafeByDistance(int speed, int Distance) {
+void rightStrafeByDistance(int speed, double targetdistance, double wheelSize,
+                           std::string lengthUnits) {
   driveClearEncoder();
-  leftFrontwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
-  leftBackwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightFrontwheelRotate(-abs(speedValueCheck(speed)), targetDistance(Distance));
-  rightBackwheelRotate(abs(speedValueCheck(speed)), targetDistance(Distance));
+  leftFrontwheelRotate(abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
+  leftBackwheelRotate(-abs(speedValueCheck(speed)),
+                      targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightFrontwheelRotate(-abs(speedValueCheck(speed)),
+                        targetDistance(targetdistance, wheelSize, lengthUnits));
+  rightBackwheelRotate(abs(speedValueCheck(speed)),
+                       targetDistance(targetdistance, wheelSize, lengthUnits));
 }
 
 double wheelcircumference(double Wheelsize, std::string lengthUnits) {
@@ -350,7 +382,24 @@ double wheelcircumference(double Wheelsize, std::string lengthUnits) {
   return Wheelsize2 * 3.14159265359;
 }
 
-double targetDistance(double targetDistance) {
+double targetDistance(double targetDistance, double wheelSize,
+                      std::string lengthUnits) {
 
   return (360 * targetDistance) / wheelcircumference(wheelSize, lengthUnits);
+}
+
+void trayPivot(int speed) {
+  trayPivotMotor.setPosition(0, degrees);
+  if (speed < 0 && backLimitSwitch.value() == 1) {
+    trayPivotMotor.stop(hold);
+  }
+
+  else if (speed > 0 && frontLimitSwitch.value() == 1) {
+    trayPivotMotor.stop(hold);
+  }
+
+  else {
+    trayPivotMotor.spin(vex::directionType::fwd, speed,
+                        vex::velocityUnits::pct);
+  }
 }
