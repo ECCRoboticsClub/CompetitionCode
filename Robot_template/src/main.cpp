@@ -39,6 +39,7 @@ int rightFrontwheelvalue(int threshold);
 int leftBackwheelvalue(int threshold);
 int leftFrontwheelvalue(int threshold);
 int Axis1value(int threshold);
+int Axis2value(int threshold);
 int Axis4value(int threshold);
 int Axis3value(int threshold);
 int speedControl();
@@ -65,20 +66,23 @@ double wheelDiameter(double Wheelsize, std::string Units);
 double targetDistance(double targetdistance, double wheelSize,
                       std::string lengthUnits);
 void trayPivot(int speed);
+void resetTrayPivot();
 
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  int speedarm = 100;
+  int speedarm = 100, threshold = 10;
   while (true) {
-    driveBase(10);
+    driveBase(threshold);
 
     if (Controller1.ButtonLeft.pressing())
-      intake(speedarm / speedControl());
+      intake(speedarm);
     else if (Controller1.ButtonRight.pressing())
-      intake(speedarm / speedControl());
+      intake(speedarm);
     else
       intakeStopMotor();
+Controller1.ButtonR2.pressed(resetTrayPivot);
+    trayPivot(Axis2value(threshold) / speedControl());
   }
 }
 
@@ -147,8 +151,15 @@ int Axis4value(int threshold) {
 }
 
 int Axis1value(int threshold) {
-  if (abs(Controller1.Axis1.value()) > threshold)
+  if (abs(Controller1.Axis1.value()) > threshold && !Controller1.ButtonL2.pressing())
     return Controller1.Axis1.value();
+  else
+    return 0;
+}
+
+int Axis2value(int threshold) {
+  if (abs(Controller1.Axis2.value()) > threshold && Controller1.ButtonL2.pressing())
+    return Controller1.Axis2.value();
   else
     return 0;
 }
@@ -389,7 +400,6 @@ double targetDistance(double targetDistance, double wheelSize,
 }
 
 void trayPivot(int speed) {
-  trayPivotMotor.setPosition(0, degrees);
   if (speed < 0 && backLimitSwitch.value() == 1) {
     trayPivotMotor.stop(hold);
   }
@@ -402,4 +412,8 @@ void trayPivot(int speed) {
     trayPivotMotor.spin(vex::directionType::fwd, speed,
                         vex::velocityUnits::pct);
   }
+}
+
+void resetTrayPivot() {
+  trayPivot(-100);
 }
