@@ -416,4 +416,5 @@ void trayPivot(int speed) {
 
 void resetTrayPivot() {
   trayPivot(-100);
+
 }
